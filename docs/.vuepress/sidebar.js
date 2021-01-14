@@ -27,6 +27,17 @@ module.exports = {
     {
       title: '工具函数',
       children: [['/frontend/Others/WriteCode', '手写代码']]
+    },
+    {
+      title: '框架',
+      children: [
+        ['/frontend/Others/Frames/Vue', 'Vue'],
+        ['/frontend/Others/Frames/React', 'React']
+      ]
+    },
+    {
+      title: '插件',
+      children: [['/frontend/Others/WriteCode', '手写代码']]
     }
   ]
 }

@@ -184,3 +184,69 @@ function validBraces(str) {
   return !str.length
 }
 ```
+
+## 6 实现 new
+
+::: tip new 作用内容
+
+- 创建一个空对象
+- 空对象的`__proto__`指向构造函数的原型对象
+- 执行构造函数
+- 返回值为 object 类型则作为 new 方法的返回值返回，否则返回上述全新对象
+
+:::
+
+```js
+function _new(fn, ...arg) {
+  // let obj = Object.create(fn.prototype)
+  var obj = new Object()
+  obj.__proto__ = fn.prototype
+  var ret = fn.apply(obj, arg)
+  return typeof ret === 'object' ? ret : obj
+}
+```
+
+## 7 实现 call
+
+```js
+Function.prototype.myCall = function(context, ...args) {
+  const fn = Symbol('fn') // 声明一个独有的Symbol属性, 防止fn覆盖已有属性
+  context = context || window // 若没有传入this, 默认绑定window对象
+  context[fn] = this // this指向调用call的对象,即我们要改变this指向的函数
+  const result = context[fn](...args) // 执行当前函数
+  delete context[fn] // 删除我们声明的fn属性
+  return result // 返回函数执行结果
+}
+```
+
+## 8 实现 apply
+
+```js
+Function.prototype.myApply = function(context, args) {
+  const fn = Symbol('fn') // 声明一个独有的Symbol属性, 防止fn覆盖已有属性
+  context = context || window // 若没有传入this, 默认绑定window对象
+  context[fn] = this // this指向调用call的对象,即我们要改变this指向的函数
+  const result = context[fn](...args) // 执行当前函数
+  delete context[fn] // 删除我们声明的fn属性
+  return result // 返回函数执行结果
+}
+```
+
+## 9 实现 bind
+
+```js
+Function.prototype.myBind = function(context, ...args) {
+  var fn = this
+  // new优先级
+  var fbound = function() {
+    return fn.apply(
+      this instanceof fbound ? this : context,
+      args.concat(Array.prototype.slice.call(arguments))
+    )
+  }
+  // 继承原型上的属性和方法
+  fbound.prototype = Object.create(fn.prototype)
+
+  return fbound
+}
+```
